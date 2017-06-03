@@ -1,3 +1,4 @@
+#include "objects.h"
 #include "sga.h"
 
 /*
@@ -13,25 +14,35 @@ int main(int argc, char const *argv[]) {
   double error;
   float* probabilities;
   int limit;
+
+  OBJECTS *objects;
+
+  if(argc != 3){ printf("\n\n\tLos datos introducidos en la Shell son incorrectos.\n"); return 1; }
+
+  objects = GetObjects(argv[1], argv[2]);
+
   srand(time(NULL));
 
   limit = 0;
   error = 1;
   population = AllocatePopulation(population);
   InitializePopulation(population);
-  GenDecodification(population);
-  CalculateFitness(population);
+  CalculateFitness(population, objects);
   while (limit < 50) {
     fathers = RouletteGame(population);
     population = Cross(population, fathers);
     Mutation(population);
     idGbest = SetupBest(population, idGbest);
-    GenDecodification(population);
-    CalculateFitness(population);
+    CalculateFitness(population, objects);
     limit++;
     printf("Generacion: %d\n", limit);
   }
-  
+
+  for (int i = 0; i < CHROMOSOM_SIZE; i++) {
+    printf("Población ideal:\n");
+    printf("[ %d ]\t", population[idGbest].chromosom[i]);
+
+  }
   printf("Global best: %f\n", population[idGbest].fitness);
   FreeMemory(population);
 

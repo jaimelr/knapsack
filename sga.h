@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include "objects.h"
 
 /*
  * PROBLEMA:
- * Maximizar la función: f(x,y) = 50 - (x - 5)² - (y - 5)²
- * para 0 <= x <= 10 y 0 <= y <= 10
+ * Knapsack
  */
 
 #define GEN_NUM         1
@@ -19,10 +19,10 @@
 #define RANGE_MIN       0
 #define RANGE           RANGE_MAX-RANGE_MIN
 #define PC              0.8
+#define SNAPSACK_WEIGHT 165
 
 typedef struct {
   unsigned char *chromosom;    // Valor binario
-  float         *values;       // Valores decimal de los genes
   unsigned int  *bitsPerGen;   // Vector de bits por gen en el cromosoma
   float         fitness;
 } INDIVIDUO;
@@ -30,7 +30,7 @@ typedef struct {
 INDIVIDUO* AllocatePopulation(INDIVIDUO* population);
 void InitializePopulation(INDIVIDUO* population);
 void GenDecodification(INDIVIDUO* population);
-void CalculateFitness(INDIVIDUO* population);
+void CalculateFitness(INDIVIDUO* population, OBJECTS* objects);
 float* CalculateProbabilities(INDIVIDUO* population);
 int* RouletteGame(INDIVIDUO* population);
 int PlayRoulette(float* probabilities);
@@ -43,7 +43,6 @@ void FreeMemory(INDIVIDUO* population);
 // ______________________________________________Development
 void PrintChromosom(unsigned char *chromosom);
 void PrintPopulation(INDIVIDUO* population);
-void PrintValues(INDIVIDUO* population);
 void PrintFathers(INDIVIDUO father, char index);
 
 #endif

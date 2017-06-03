@@ -16,7 +16,6 @@ INDIVIDUO* AllocatePopulation(INDIVIDUO* population) {
   }
   for (i = 0; i < POPULATION_SIZE; i++) {
     population[i].chromosom = (unsigned char*)malloc(GEN_NUM*BITS_PER_GEN*sizeof(unsigned char*));
-    population[i].values = (float*)malloc(GEN_NUM*sizeof(float));
     population[i].bitsPerGen = (unsigned int*)malloc(GEN_NUM*sizeof(unsigned int));
     if(population == NULL) {
       printf("ERROR 001: No se ha podido asignar memoria, intentalo con otra población.\n");
@@ -46,17 +45,22 @@ void InitializePopulation(INDIVIDUO* population) {
   }
 }
 
-void CalculateFitness(INDIVIDUO* population)
-{
+void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
   int i;
+  int j;
   float x;
   float y;
+  float totalProfit;
 
-  for (i = 0; i < POPULATION_SIZE; i++)
-  {
-  	x = population[i].values[0];
-    y = population[i].values[1];
-  	 population[i].fitness = (x*x) + (y*y);
+  totalProfit = 0;
+
+  for (i = 0; i < POPULATION_SIZE; i++) {
+    for (j = 0; j < CHROMOSOM_SIZE; j++) {
+      if(population[i].chromosom[j] == 1) {
+        totalProfit += objects[j].profit;
+      }
+    }
+  	 population[i].fitness = totalProfit;
      printf("Fitness[i]: %f\n", population[i].fitness);
   }
 }
@@ -212,7 +216,6 @@ void FreeMemory(INDIVIDUO* population) {
 
   for (i = 0; i < POPULATION_SIZE; i++) {
     free(population[i].chromosom);
-    free(population[i].values);
     free(population[i].bitsPerGen);
   }
 }
@@ -238,20 +241,6 @@ void PrintPopulation(INDIVIDUO* population) {
     PrintChromosom(population[i].chromosom);
     printf("\n");
   }
-}
-
-void PrintValues(INDIVIDUO* population) {
-  unsigned int i;
-  unsigned int j;
-
-  for(i = 0; i < POPULATION_SIZE; i++) {
-    printf("\nIndividuo [%d]:", i);
-    for(j = 0; j < GEN_NUM; j++) {
-      printf("\n\tValor [%d] = %f", j, population[i].values[j]);
-    }
-    printf("\n\tFitness = %f\n", population[i].fitness);
-  }
-  printf("\n");
 }
 
 void PrintFathers(INDIVIDUO father, char index) {
