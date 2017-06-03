@@ -24,17 +24,18 @@ int main(int argc, char const *argv[]) {
   srand(time(NULL));
 
   limit = 0;
-  error = 1;
+  error = 11;
   population = AllocatePopulation(population);
-  InitializePopulation(population);
+  InitializePopulation(population, objects);
   CalculateFitness(population, objects);
-  while (limit < 50) {
+  while (limit < 20000) {
     fathers = RouletteGame(population);
     population = Cross(population, fathers);
     Mutation(population);
     idGbest = SetupBest(population, idGbest);
     CalculateFitness(population, objects);
     limit++;
+    error = SNAPSACK_WEIGHT - population[idGbest].fitness;
     printf("Generacion: %d\n", limit);
   }
 

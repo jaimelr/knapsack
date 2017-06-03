@@ -26,24 +26,55 @@ INDIVIDUO* AllocatePopulation(INDIVIDUO* population) {
   return population;
 }
 
-void InitializePopulation(INDIVIDUO* population) {
+void InitializePopulation(INDIVIDUO* population, OBJECTS* objects) {
   int i;
   int j;
   int randNum;
+  int ok=1;
+  float weightmax=165;
+  float weight=0;
 
   for (i = 0; i < POPULATION_SIZE; i++) {
-    for (j = 0; j < CHROMOSOM_SIZE; j++) {
-      randNum = 100*((1.0*rand())/RAND_MAX);
-      if(randNum % 2)
-        population[i].chromosom[j] = 0;
-      else
-        population[i].chromosom[j] = 1;
+    while(ok){
+      for (j = 0; j < CHROMOSOM_SIZE; j++) {
+        randNum = 100*((1.0*rand())/RAND_MAX);
+        if(randNum % 2)
+          population[i].chromosom[j] = 0;
+        else
+          population[i].chromosom[j] = 1;
+      }
+      for (j = 0; j < GEN_NUM; j++) {
+        population[i].bitsPerGen[j] = BITS_PER_GEN;
+      }
+
+      weight = checkweight(population, i, objects);
+      if(weight <= weightmax)
+        ok=0;//da la salida al while
     }
-    for (j = 0; j < GEN_NUM; j++) {
-      population[i].bitsPerGen[j] = BITS_PER_GEN;
-    }
+    printf("pesoaceptado_individio %d = %f \n",i,weight);
+    ok=1;//vuelve a ser condicion para q entre a while
   }
 }
+
+float checkweight(INDIVIDUO* population, int init, OBJECTS* objects) {
+
+  int j;
+  float weight=0;
+
+  printf("individuo=%d \n",init);
+
+    for(j = 0; j < BITS_PER_GEN ; j++) {
+      if(population[init].chromosom[j] == 1)
+      {
+      	weight = weight + objects[j].weight;
+      	printf("objects%d=%f \n",j,objects[j].weight);
+      }
+    }
+
+  printf("pesoprueba=%d \n",weight);
+  return weight;
+}
+
 
 void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
   int i;
@@ -51,17 +82,23 @@ void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
   float x;
   float y;
   float totalProfit;
+  float totalWeight;
 
   totalProfit = 0;
+  totalWeight = 0;
 
   for (i = 0; i < POPULATION_SIZE; i++) {
-    for (j = 0; j < CHROMOSOM_SIZE; j++) {
+    for (j = 0, totalProfit = 0; j < CHROMOSOM_SIZE; j++) {
       if(population[i].chromosom[j] == 1) {
         totalProfit += objects[j].profit;
+        totalWeight += objects[j].weight;
       }
     }
-  	 population[i].fitness = totalProfit;
-     printf("Fitness[i]: %f\n", population[i].fitness);
+    if(totalWeight > SNAPSACK_WEIGHT)
+      population[i].fitness = 10;
+    else
+      population[i].fitness = totalProfit;
+    //printf("Fitness[%i]: %f\n", i, population[i].fitness);
   }
 }
 

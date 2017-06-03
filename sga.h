@@ -13,13 +13,13 @@
 
 #define GEN_NUM         1
 #define BITS_PER_GEN    10
-#define POPULATION_SIZE 6
+#define POPULATION_SIZE 50
 #define CHROMOSOM_SIZE  GEN_NUM*BITS_PER_GEN
 #define RANGE_MAX       165
 #define RANGE_MIN       0
 #define RANGE           RANGE_MAX-RANGE_MIN
 #define PC              0.8
-#define SNAPSACK_WEIGHT 165
+#define SNAPSACK_WEIGHT 165.0
 
 typedef struct {
   unsigned char *chromosom;    // Valor binario
@@ -28,7 +28,8 @@ typedef struct {
 } INDIVIDUO;
 
 INDIVIDUO* AllocatePopulation(INDIVIDUO* population);
-void InitializePopulation(INDIVIDUO* population);
+void InitializePopulation(INDIVIDUO* population, OBJECTS* objects);
+float checkweight(INDIVIDUO* population, int init, OBJECTS* objects);
 void GenDecodification(INDIVIDUO* population);
 void CalculateFitness(INDIVIDUO* population, OBJECTS* objects);
 float* CalculateProbabilities(INDIVIDUO* population);
