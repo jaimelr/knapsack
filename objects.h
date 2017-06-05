@@ -5,6 +5,7 @@
 #include <math.h>
 #include <time.h>
 
+#define NUM_GEN 24
 
 typedef struct {
   float weight;

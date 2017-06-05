@@ -31,7 +31,6 @@ void InitializePopulation(INDIVIDUO* population, OBJECTS* objects) {
   int j;
   int randNum;
   int ok=1;
-  float weightmax=165;
   float weight=0;
 
   for (i = 0; i < POPULATION_SIZE; i++) {
@@ -48,10 +47,10 @@ void InitializePopulation(INDIVIDUO* population, OBJECTS* objects) {
       }
 
       weight = checkweight(population, i, objects);
-      if(weight <= weightmax)
+      if(weight <= SNAPSACK_WEIGHT)
         ok=0;//da la salida al while
     }
-    printf("pesoaceptado_individio %d = %f \n",i,weight);
+    //printf("pesoaceptado_individio %d = %f \n",i,weight);
     ok=1;//vuelve a ser condicion para q entre a while
   }
 }
@@ -61,17 +60,17 @@ float checkweight(INDIVIDUO* population, int init, OBJECTS* objects) {
   int j;
   float weight=0;
 
-  printf("individuo=%d \n",init);
+  //printf("individuo=%d \n",init);
 
     for(j = 0; j < BITS_PER_GEN ; j++) {
       if(population[init].chromosom[j] == 1)
       {
       	weight = weight + objects[j].weight;
-      	printf("objects%d=%f \n",j,objects[j].weight);
+      	//printf("objects%d=%f \n",j,objects[j].weight);
       }
     }
 
-  printf("pesoprueba=%d \n",weight);
+  //printf("pesoprueba=%d \n",weight);
   return weight;
 }
 
@@ -88,14 +87,17 @@ void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
   totalWeight = 0;
 
   for (i = 0; i < POPULATION_SIZE; i++) {
-    for (j = 0, totalProfit = 0; j < CHROMOSOM_SIZE; j++) {
+    for (j = 0, totalProfit = 0, totalWeight = 0; j < CHROMOSOM_SIZE; j++) {
       if(population[i].chromosom[j] == 1) {
         totalProfit += objects[j].profit;
         totalWeight += objects[j].weight;
       }
     }
-    if(totalWeight > SNAPSACK_WEIGHT)
-      population[i].fitness = 10;
+    if(totalWeight > SNAPSACK_WEIGHT) {
+    //_____________________________________________Penalizacion por exeder peso
+      population[i].fitness = 10;//totalProfit - 5*(totalWeight - SNAPSACK_WEIGHT);
+      //printf("\nIndividuo[%d] peso = %f\n", i, totalWeight);
+    }
     else
       population[i].fitness = totalProfit;
     //printf("Fitness[%i]: %f\n", i, population[i].fitness);
@@ -220,7 +222,7 @@ void Mutation(INDIVIDUO* population) {
 
   for (i = 0; i < POPULATION_SIZE; i++) {
     for (j = 0; j < CHROMOSOM_SIZE; j++) {
-      randNum = rand() % 1000 + 1;
+      randNum = rand() % 100 + 1;
       if(randNum == 1) {
         if(population[i].chromosom[j] == 0) {
           population[i].chromosom[j] = 1;

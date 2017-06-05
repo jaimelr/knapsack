@@ -12,14 +12,15 @@
  */
 
 #define GEN_NUM         1
-#define BITS_PER_GEN    10
+#define BITS_PER_GEN    24
 #define POPULATION_SIZE 50
 #define CHROMOSOM_SIZE  GEN_NUM*BITS_PER_GEN
-#define RANGE_MAX       165
+#define RANGE_MAX       6404180
 #define RANGE_MIN       0
 #define RANGE           RANGE_MAX-RANGE_MIN
 #define PC              0.8
-#define SNAPSACK_WEIGHT 165.0
+#define SNAPSACK_WEIGHT 6404180.0
+#define KNAPSACK_BEST   13549094
 
 typedef struct {
   unsigned char *chromosom;    // Valor binario

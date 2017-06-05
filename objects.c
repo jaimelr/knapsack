@@ -27,9 +27,9 @@ OBJECTS* GetObjects(char const *argv1, char const *argv2) {
 void PrintObjects(OBJECTS *x) {
   unsigned int i;
 
-  for (i = 0; i < 10; i++) {
-    printf("\nweight[%d] = %f", i, x[i].weight);
-    printf("\nweight[%d] = %f\n", i, x[i].profit);
+  for (i = 0; i < NUM_GEN; i++) {
+    printf("Weight[%d] = %f", i, x[i].weight);
+    printf("\tProfit[%d] = %f\n", i, x[i].profit);
   }
 
 }
