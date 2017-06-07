@@ -5,7 +5,7 @@
 #include <math.h>
 #include <time.h>
 
-#define NUM_GEN 24
+#define NUM_GEN 24  //_________________ Es necesario cambiar cada prueba
 
 typedef struct {
   float weight;
