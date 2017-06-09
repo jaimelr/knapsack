@@ -12,15 +12,12 @@
  */
 
 #define GEN_NUM         1
-#define BITS_PER_GEN    24  //_________________ Es necesario cambiar cada prueba
-#define POPULATION_SIZE 50
+#define BITS_PER_GEN    5  //_________________ Es necesario cambiar cada prueba
+#define POPULATION_SIZE 200
 #define CHROMOSOM_SIZE  GEN_NUM*BITS_PER_GEN
-#define RANGE_MAX       6404180 //______________ Es necesario cambiar cada prueba
-#define RANGE_MIN       0
-#define RANGE           RANGE_MAX-RANGE_MIN
 #define PC              0.8
-#define SNAPSACK_WEIGHT 6404180.0 //_________________ Es necesario cambiar cada prueba
-#define KNAPSACK_BEST   13549094  //_________________ Es necesario cambiar cada prueba
+#define SNAPSACK_WEIGHT 26.0 //_________________ Es necesario cambiar cada prueba
+#define KNAPSACK_BEST   51  //_________________ Es necesario cambiar cada prueba
 
 typedef struct {
   unsigned char *chromosom;    // Valor binario
@@ -30,9 +27,9 @@ typedef struct {
 
 INDIVIDUO* AllocatePopulation(INDIVIDUO* population);
 void InitializePopulation(INDIVIDUO* population, OBJECTS* objects);
-float checkweight(INDIVIDUO* population, int init, OBJECTS* objects);
+float CheckWeight(INDIVIDUO* population, int init, OBJECTS* objects);
 void GenDecodification(INDIVIDUO* population);
-void CalculateFitness(INDIVIDUO* population, OBJECTS* objects);
+INDIVIDUO* CalculateFitness(INDIVIDUO* population, OBJECTS* objects, int idGbest);
 float* CalculateProbabilities(INDIVIDUO* population);
 int* RouletteGame(INDIVIDUO* population);
 int PlayRoulette(float* probabilities);

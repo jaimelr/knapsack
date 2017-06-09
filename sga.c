@@ -2,8 +2,7 @@
 
 /*
  * PROBLEMA:
- * Maximizar la función: f(x,y) = 50 - (x - 5)² - (y - 5)²
- * para 0 <= x <= 10 y 0 <= y <= 10
+ * Knapsack
  */
 
 INDIVIDUO* AllocatePopulation(INDIVIDUO* population) {
@@ -29,15 +28,15 @@ INDIVIDUO* AllocatePopulation(INDIVIDUO* population) {
 void InitializePopulation(INDIVIDUO* population, OBJECTS* objects) {
   int i;
   int j;
-  int randNum;
-  int ok=1;
+  float randNum;
+  int true = 1;
   float weight=0;
 
   for (i = 0; i < POPULATION_SIZE; i++) {
-    while(ok){
+    while(true){
       for (j = 0; j < CHROMOSOM_SIZE; j++) {
-        randNum = 100*((1.0*rand())/RAND_MAX);
-        if(randNum % 2)
+        randNum = ((1.0*rand())/RAND_MAX);
+        if(randNum < 0.5)
           population[i].chromosom[j] = 0;
         else
           population[i].chromosom[j] = 1;
@@ -45,37 +44,29 @@ void InitializePopulation(INDIVIDUO* population, OBJECTS* objects) {
       for (j = 0; j < GEN_NUM; j++) {
         population[i].bitsPerGen[j] = BITS_PER_GEN;
       }
-
-      weight = checkweight(population, i, objects);
+      weight = CheckWeight(population, i, objects);
       if(weight <= SNAPSACK_WEIGHT)
-        ok=0;//da la salida al while
+        true = 0; //da la salida al while
     }
-    //printf("pesoaceptado_individio %d = %f \n",i,weight);
-    ok=1;//vuelve a ser condicion para q entre a while
+    true = 1; //vuelve a ser condicion para q entre a while
   }
 }
 
-float checkweight(INDIVIDUO* population, int init, OBJECTS* objects) {
+float CheckWeight(INDIVIDUO* population, int init, OBJECTS* objects) {
 
   int j;
-  float weight=0;
+  float weight = 0;
 
-  //printf("individuo=%d \n",init);
-
-    for(j = 0; j < BITS_PER_GEN ; j++) {
-      if(population[init].chromosom[j] == 1)
-      {
-      	weight = weight + objects[j].weight;
-      	//printf("objects%d=%f \n",j,objects[j].weight);
-      }
+  for(j = 0; j < BITS_PER_GEN ; j++) {
+    if(population[init].chromosom[j] == 1) {
+    	weight = weight + objects[j].weight;
     }
+  }
 
-  //printf("pesoprueba=%d \n",weight);
   return weight;
 }
 
-
-void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
+INDIVIDUO* CalculateFitness(INDIVIDUO* population, OBJECTS* objects, int idGbest) {
   int i;
   int j;
   float x;
@@ -94,14 +85,16 @@ void CalculateFitness(INDIVIDUO* population, OBJECTS* objects) {
       }
     }
     if(totalWeight > SNAPSACK_WEIGHT) {
-    //_____________________________________________Penalizacion por exeder peso
-      population[i].fitness = 10;//totalProfit - 5*(totalWeight - SNAPSACK_WEIGHT);
-      //printf("\nIndividuo[%d] peso = %f\n", i, totalWeight);
+      for(j = 0; j< CHROMOSOM_SIZE; j++)
+      population[i].chromosom[j] = population[idGbest].chromosom[j];
+      population[i].fitness = population[idGbest].fitness;//totalProfit - 5*(totalWeight - SNAPSACK_WEIGHT);
     }
-    else
+    else {
       population[i].fitness = totalProfit;
-    //printf("Fitness[%i]: %f\n", i, population[i].fitness);
+    }
   }
+
+  return population;
 }
 
 
@@ -141,12 +134,6 @@ int* RouletteGame(INDIVIDUO* population) {
 
   for (i = 0; i < POPULATION_SIZE; i++) {
     father = PlayRoulette(probabilities);
-    for (j = 0; j < POPULATION_SIZE; j++) {
-      if(population[father].fitness < population[j].fitness) {
-        i--;
-        break;
-      }
-    }
     *(fathers + i) = father;
   }
 
@@ -172,8 +159,7 @@ int PlayRoulette(float* probabilities) {
   return father;
 }
 
-INDIVIDUO* Cross(INDIVIDUO* population, int* fathers)
-{
+INDIVIDUO* Cross(INDIVIDUO* population, int* fathers) {
 	int i;
   int j;
   int p1;
@@ -181,7 +167,6 @@ INDIVIDUO* Cross(INDIVIDUO* population, int* fathers)
 	float numRand;
 	int Px;
 	INDIVIDUO* GenerationNew;
-
 
 	GenerationNew = AllocatePopulation(GenerationNew);
 
@@ -211,7 +196,6 @@ INDIVIDUO* Cross(INDIVIDUO* population, int* fathers)
     }
   }
 
-  //FreeMemory(population);
   return GenerationNew;
 }
 
@@ -245,9 +229,10 @@ int SetupBest(INDIVIDUO* population, unsigned int idbest) {
 		if (population[i].fitness > best)
 		{
 			best = population[i].fitness;
+      idbest = i;
 		}
 	}
-  return best;
+  return idbest;
 }
 
 void FreeMemory(INDIVIDUO* population) {

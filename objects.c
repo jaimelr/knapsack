@@ -3,10 +3,10 @@
 OBJECTS* GetObjects(char const *argv1, char const *argv2) {
   FILE *fpA=NULL, *fpB=NULL;
 	OBJECTS *objects;
-	char *weight=NULL, *profit=NULL;
+	const char *weight=NULL, *profit=NULL;
 
-	weight=argv1;
-	profit=argv2;
+	weight = argv1;
+	profit = argv2;
 	//Abrir archivos
   fpA=fopen(weight,"rt");
   fpB=fopen(profit,"rt");
@@ -28,8 +28,8 @@ void PrintObjects(OBJECTS *x) {
   unsigned int i;
 
   for (i = 0; i < NUM_GEN; i++) {
-    printf("Weight[%d] = %f", i, x[i].weight);
-    printf("\tProfit[%d] = %f\n", i, x[i].profit);
+    //printf("Weight[%d] = %f", i, x[i].weight);
+    //printf("\tProfit[%d] = %f\n", i, x[i].profit);
   }
 
 }
